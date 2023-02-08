@@ -1,0 +1,87 @@
+{
+  "users": [
+    {
+      "name": "Jesse",
+      "email": "bigbucks@hunter.com",
+      "password": "asdf123!",
+      "phone": "4358675309",
+      "payment": {
+        "nameOnCard": "",
+        "cardNumber": "",
+        "exp": "",
+        "securityCode": ""
+      },
+      "id": 0
+    },
+    {
+      "name": "Shawn",
+      "email": "thewerbinator@shawn.com",
+      "password": "asdf123!",
+      "phone": "8015555555",
+      "payment": {
+        "nameOnCard": "",
+        "cardNumber": "",
+        "exp": "",
+        "securityCode": ""
+      },
+      "id": 1
+    },
+    {
+      "name": "asdf",
+      "email": "test@user.com",
+      "password": "asdf123!",
+      "phone": "4358675309",
+      "payment": {
+        "nameOnCard": "",
+        "cardNumber": "",
+        "exp": "",
+        "securityCode": ""
+      },
+      "id": 2
+    }
+  ],
+  "equipment": [
+    {
+      "name": "trailer",
+      "description": "put things on it, pull it with a truck...",
+      "isRented": true,
+      "id": 0
+    },
+    {
+      "name": "frontloader",
+      "description": "for moving lots of dirt",
+      "isRented": true,
+      "id": 1
+    },
+    {
+      "name": "enclosed trailer",
+      "description": "when you don't want rain on your mattress...",
+      "isRented": false,
+      "id": 2
+    }
+  ],
+  "savedForLater": [
+    {
+      "id": 0,
+      "userId": 0,
+      "equipmentId": 0
+    },
+    {
+      "id": 1,
+      "userId": 1,
+      "equipmentId": 0
+    }
+  ],
+  "activeRentals": [
+    {
+      "id": 0,
+      "userId": 1,
+      "equipmentId": 0
+    },
+    {
+      "id": 1,
+      "userId": 0,
+      "equipmentId": 1
+    }
+  ]
+}

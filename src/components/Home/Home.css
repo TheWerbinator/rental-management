@@ -1,0 +1,13 @@
+.equipment-gallery {
+  display: flex;
+  gap: 10px;
+  justify-content: space-evenly;
+}
+
+.equipment-gallery-item {
+  width: 200px;
+}
+
+.item-btn-wrapper button{
+  margin: 5px;
+}
