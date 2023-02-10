@@ -1,10 +1,10 @@
 {
   "users": [
     {
-      "name": "Jesse",
-      "email": "bigbucks@hunter.com",
+      "name": "Braden",
+      "email": "Verla_Rolfson@hotmail.com",
       "password": "asdf123!",
-      "phone": "4358675309",
+      "phone": "236-596-2585",
       "payment": {
         "nameOnCard": "",
         "cardNumber": "",
@@ -14,10 +14,10 @@
       "id": 0
     },
     {
-      "name": "Shawn",
-      "email": "thewerbinator@shawn.com",
+      "name": "Amina",
+      "email": "Cathryn_Grant89@hotmail.com",
       "password": "asdf123!",
-      "phone": "8015555555",
+      "phone": "303-192-1519",
       "payment": {
         "nameOnCard": "",
         "cardNumber": "",
@@ -27,10 +27,10 @@
       "id": 1
     },
     {
-      "name": "asdf",
-      "email": "test@user.com",
-      "password": "asdf123!",
-      "phone": "4358675309",
+      "name": "Testy McTestperson",
+      "email": "shawnthewerber@gmail.com",
+      "password": "asdf",
+      "phone": "7026955882",
       "payment": {
         "nameOnCard": "",
         "cardNumber": "",
@@ -42,46 +42,41 @@
   ],
   "equipment": [
     {
-      "name": "trailer",
-      "description": "put things on it, pull it with a truck...",
-      "isRented": true,
+      "name": "Eugenia",
+      "description": "Corporate Cisgender Maryland Alaska unrealistic Shirt set",
+      "isRented": false,
+      "image": "/src/assets/flatbed_with_ramps.png",
       "id": 0
     },
     {
-      "name": "frontloader",
-      "description": "for moving lots of dirt",
-      "isRented": true,
+      "name": "Chadrick",
+      "description": "dolorum Guarani Strategist time lavender",
+      "isRented": false,
+      "image": "/src/assets/horse_trailer.png",
       "id": 1
     },
     {
-      "name": "enclosed trailer",
-      "description": "when you don't want rain on your mattress...",
+      "name": "Andy",
+      "description": "plush global ivory relationships gadzooks Gold Bergnaum Bicycle",
       "isRented": false,
+      "image": "/src/assets/pickup_truck.png",
       "id": 2
-    }
-  ],
-  "savedForLater": [
-    {
-      "id": 0,
-      "userId": 0,
-      "equipmentId": 0
     },
     {
-      "id": 1,
-      "userId": 1,
-      "equipmentId": 0
-    }
-  ],
-  "activeRentals": [
-    {
-      "id": 0,
-      "userId": 1,
-      "equipmentId": 0
+      "name": "Dawn",
+      "description": "Bicycle optimal Handcrafted CLI applications Pop Non",
+      "isRented": false,
+      "image": "/src/assets/enclosed_trailer.png",
+      "id": 3
     },
     {
-      "id": 1,
-      "userId": 0,
-      "equipmentId": 1
+      "name": "Frederick",
+      "description": "tesla Tuna VGA Borders payment Chair Aluminium",
+      "isRented": false,
+      "image": "/src/assets/pickup_truck.png",
+      "id": 4
     }
-  ]
+  ],
+  "savedForLater": [],
+  "activeRentals": []
 }

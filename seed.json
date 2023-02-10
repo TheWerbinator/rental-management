@@ -45,18 +45,21 @@
       "name": "trailer",
       "description": "put things on it, pull it with a truck...",
       "isRented": true,
+      "image": "/src/assets/trailer.png",
       "id": 0
     },
     {
       "name": "frontloader",
       "description": "for moving lots of dirt",
       "isRented": true,
+      "image": "/src/assets/frontloader.png",
       "id": 1
     },
     {
       "name": "enclosed trailer",
       "description": "when you don't want rain on your mattress...",
       "isRented": false,
+      "image": "/src/assets/enclosed_trailer.png",
       "id": 2
     }
   ],

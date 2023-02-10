@@ -6,18 +6,20 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
-  const { modalState, setModalState, addUser, checkUser } = useRent();
+  const { loginModal, setLoginModal, addUser, checkUser } = useRent();
 
   const [window, setWindow] = useState('login');
   const [errorModal, setErrorModal] = useState(false);
+  const [nameInput, setNameInput] = useState('');
+  const [phoneInput, setPhoneInput] = useState('');
   const [emailInput, setEmailInput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
   const [confirmInput, setConfirmInput] = useState('');
 
-  const submitLogin = (e) => {
+  const submitLogin = async (e) => {
     e.preventDefault();
-    if(checkUser(e.target[0].value, e.target[1].value)) {
-      setModalState(false)
+    if(await checkUser(emailInput, passwordInput) === true) {
+      setLoginModal(false)
       toast.success('Logged In', {
         position: "top-center",
         autoClose: 2000,
@@ -28,10 +30,9 @@ const Login = () => {
         progress: undefined,
         theme: "dark",
       })
-      console.log('check user returned true');
     } else {
       setErrorModal(true)
-      toast.error('Error Logging In, Please Try Again', {
+      toast.error('Incorrect Login', {
         position: "top-center",
         autoClose: 2000,
         hideProgressBar: true,
@@ -41,17 +42,17 @@ const Login = () => {
         progress: undefined,
         theme: "dark",
       })
-      console.log('check user returned false');
     }
   }
 
-  const submitSignup = (e) => {
+  const submitSignup = async (e) => {
     e.preventDefault();
-    if(e.target[1].value !== e.target[2].value) {
+    if(passwordInput !== confirmInput) {
       setErrorModal(true)
     } else {
+      setLoginModal(false)
       setErrorModal(false)
-      addUser(e.target[0].value, e.target[1].value)
+      await addUser(nameInput, phoneInput, emailInput, passwordInput)
         .then(() => {
           toast.success("Registered", {
             position: "top-center",
@@ -80,10 +81,10 @@ const Login = () => {
   }
 
   return (
-    <div className={modalState ? 'login-modal' : 'login-modal hide'}>
+    <div className={loginModal ? 'login-modal' : 'login-modal hide'}>
       {window === 'login' ?
         <>
-          <img src={x} onClick={() => setModalState(false)}></img>
+          <img src={x} onClick={() => setLoginModal(false)}></img>
           <form className='login-inputs' onSubmit={(e) => submitLogin(e)}>
             <label>email<input type="text" value={emailInput} onChange={(e) => setEmailInput(e.target.value)}/></label>
             <label>password<input type="text" value={passwordInput} onChange={(e) => setPasswordInput(e.target.value)}/></label>
@@ -93,9 +94,11 @@ const Login = () => {
         </>
       :
         <>
-          <img src={x} onClick={() => setModalState(false)}></img>
+          <img src={x} onClick={() => setLoginModal(false)}></img>
           <form className='login-inputs' onSubmit={(e) => submitSignup(e)}>
-            <label>username<input type="text" value={emailInput} onChange={(e) => setEmailInput(e.target.value)}/></label>
+            <label>name<input type="text" value={nameInput} onChange={(e) => setNameInput(e.target.value)}/></label>
+            <label>phone number<input type="text" value={phoneInput} onChange={(e) => setPhoneInput(e.target.value)}/></label>
+            <label>email<input type="text" value={emailInput} onChange={(e) => setEmailInput(e.target.value)}/></label>
             <label>password<input type="text" value={passwordInput} onChange={(e) => setPasswordInput(e.target.value)}/></label>
             <label>confirm password<input type="text" value={confirmInput} onChange={(e) => setConfirmInput(e.target.value)}/></label>
             <p className={errorModal ? 'submit-error' : 'submit-error hide'} ></p>

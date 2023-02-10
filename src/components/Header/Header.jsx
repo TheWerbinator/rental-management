@@ -7,12 +7,12 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Header = () => {
-  const { loggedIn, changeRoute, openModal, signOut } = useRent();
+  const { loggedIn, changeRoute, openLoginModal, signOut, setSearchText } = useRent();
   return (
     <div className='header-wrapper'>
       <div className='header-search'>
         <img src={glass} alt="search" />
-        <p>Search Inventory...</p>
+        <input type="text" onChange={(e) => setSearchText(e.target.value.toLowerCase())} placeholder='Search' />
       </div>
       <div className='logo-wrapper' onClick={() => changeRoute('home')}>
         <img src={logo} alt="logo" />
@@ -36,7 +36,7 @@ const Header = () => {
         </div>
       : 
         <div className='header-auth'>
-          <p onClick={() => openModal()}>Sign In</p>
+          <p onClick={() => openLoginModal()}>Sign In</p>
         </div>
       }
     </div>

@@ -34,3 +34,9 @@
   padding: 20px;
   width: 200px;
 }
+
+.profile-rental-item img,
+.profile-saved-item img{
+  width: 80%;
+  object-fit: cover;
+}

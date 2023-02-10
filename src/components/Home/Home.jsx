@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useRent } from '../../providers/rent_provider';
 import './Home.css';
+import x from '../../assets/close.png'
 
 const Home = () => {
-  const { equipment, rentItem, saveItem } = useRent();
+  const { equipment, rentItem, saveItem, searchText, loggedIn, openLoginModal } = useRent();
   const remainingEquipment = equipment.filter((item) => !item.isRented);
+  const [productModal, setProductModal] = useState(false)
+  const [currentItem, setCurrentItem] = useState({})
+
   return (
     <>
       <div className='hero-wrapper'>
@@ -12,16 +16,51 @@ const Home = () => {
       </div>
       <div className='equipment-gallery'>
         {equipment.length && remainingEquipment.map((item) => {
-          return <div className='equipment-gallery-item' key={item.id}>
-            <h3>{item.name}</h3>
-            <p>{item.description}</p>
-            <div className="item-btn-wrapper">
-              <button onClick={() => rentItem(item)}>Rent</button>
-              <button onClick={() => saveItem(item)}>Save for Later</button>
+          if(item.name.toLowerCase().includes(searchText)) {
+            return <div className='equipment-gallery-item' key={item.id}>
+              <h3>{item.name}</h3>
+              <img src={item.image} alt={item.name} />
+              <button onClick={() => {
+                setProductModal(true)
+                setCurrentItem(item)
+              }}>More Info</button>
             </div>
-          </div>
+          } else if(!searchText) {
+            return <div className='equipment-gallery-item' key={item.id}>
+              <h3>{item.name}</h3>
+              <img src={item.image} alt={item.name} />
+              <button onClick={() => {
+                setProductModal(true)
+                setCurrentItem(item)
+              }}>More Info</button>
+            </div>
+          }
         })}
       </div>
+      {productModal && <div className="description-modal">
+        <img src={x} onClick={() => setModal(false)}></img>
+        <h3>{currentItem.name}</h3>
+        <img className='product-image' src={currentItem.image} alt={currentItem.name} />
+        <p>{currentItem.description}</p>
+        <div className="item-btn-wrapper">
+          <button onClick={() => {
+            if(loggedIn) {
+              rentItem(currentItem)
+            } else {
+              setProductModal(false)
+              openLoginModal()
+            }
+          }}>Rent</button>
+          <button onClick={() => {
+            if(loggedIn) {
+              saveItem(currentItem)
+            } else {
+              setProductModal(false)
+              openLoginModal()
+            }
+          }}>Save for Later</button>
+        </div>
+      </div>}
     </>
   );
 }

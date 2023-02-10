@@ -5,6 +5,7 @@
   margin: 20px;
 }
 
+.logo-wrapper { cursor: pointer; }
 .logo-wrapper img {
   width: 300px;
 }

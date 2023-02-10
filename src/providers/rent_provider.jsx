@@ -10,7 +10,8 @@ export const RentProvider = ({children}) => {
   const [activeRentals, setActiveRentals] = useState([]);
   const [route, setRoute] = useState('home');
   const [loggedIn, setLoggedIn] = useState(false);
-  const [modalState, setModalState] = useState(false);
+  const [loginModal, setLoginModal] = useState(false);
+  const [searchText, setSearchText] = useState('');
 
   const fetchDb = async (url) => {
     try {
@@ -43,7 +44,7 @@ export const RentProvider = ({children}) => {
   const rentItem = (item) => {
     if(loggedIn) {
       addActiveRental(item, currentUser.id);
-    } else setModalState(true);
+    } else setLoginModal(true);
   }
 
   const addActiveRental = async (item, idOfUser) => {
@@ -82,7 +83,7 @@ export const RentProvider = ({children}) => {
   const saveItem = (item) => {
     if(loggedIn) {
       addSavedForLater(item, currentUser.id);
-    } else setModalState(true);
+    } else setLoginModal(true);
   }
 
   const addSavedForLater = async (item, idOfUser) => {
@@ -110,8 +111,8 @@ export const RentProvider = ({children}) => {
     setRoute(route)
   }
 
-  const openModal = () => {
-    modalState === false ? setModalState(true) : setModalState(false);
+  const openLoginModal = () => {
+    loginModal === false ? setLoginModal(true) : setLoginModal(false);
   }
 
   const signOut = () => {
@@ -161,24 +162,46 @@ export const RentProvider = ({children}) => {
     }
   }
 
-  const registerFetch = async () => {
+  const registerFetch = async (user) => {
     try {
       await fetch(`http://localhost:3000/users`, { 
         method: 'POST', 
-        body: JSON.stringify(newestAddition),
+        body: JSON.stringify(user),
         headers: {
           'Content-type': 'application/json; charset=UTF-8',
         },
       })
+      let userInQuestion = [];
+      await usersFetch().then((response) => {
+        userInQuestion = response.filter((fetchedUser) => {
+          if(user.email === fetchedUser.email && user.password === fetchedUser.password) {
+            return user
+          }
+        })[0]
+      })
+      return userInQuestion
     } catch (error) {
       console.error(error);
     }
   }
 
-  const addUser = async (email, password) => {
-    return await registerFetch(email, password).then((user) => {
-      localStorage.setItem('user', JSON.stringify())
-      return setCurrentUser(user)
+  const addUser = async (name, phone, email, password) => {
+    let newestAddition = {
+      "name": name,
+      "email": email,
+      "password": password,
+      "phone": phone,
+      "payment": {
+        "nameOnCard": "",
+        "cardNumber": "",
+        "exp": "",
+        "securityCode": ""
+      }
+    }
+    await registerFetch(newestAddition).then((user) => {
+      localStorage.setItem('user', JSON.stringify(user))
+      setCurrentUser(user)
+      setLoggedIn(true)
     })
   }
 
@@ -193,19 +216,19 @@ export const RentProvider = ({children}) => {
   }
 
   const checkUser = async (email, pw) => {
-    console.log('checkUser email and password', email, pw);
     const users = await usersFetch();
     const userInQuestion = users.filter((user) => {
       if(user.email === email && user.password === pw) {
         return user
       }
     })
-    console.log('fetched user name and password', userInQuestion[0].email, userInQuestion[0].password);
-    if(userInQuestion[0].password === pw && userInQuestion.length === 1) {
+    if(userInQuestion.length && userInQuestion[0].password === pw && userInQuestion.length === 1) {
       setCurrentUser(userInQuestion[0]);
       localStorage.setItem('user', JSON.stringify(userInQuestion[0]))
       setLoggedIn(true);
       return true;
+    } else {
+      console.log('checkUser fetch returned more than one user or none at all')
     }
     return false;
   }
@@ -213,8 +236,8 @@ export const RentProvider = ({children}) => {
   return (
     <RentContext.Provider 
       value={{
-        modalState,
-        setModalState,
+        loginModal,
+        setLoginModal,
         currentUser,
         addUser,
         checkUser,
@@ -222,14 +245,16 @@ export const RentProvider = ({children}) => {
         route,
         changeRoute,
         signOut,
-        openModal,
+        openLoginModal,
         equipment,
         saveItem,
         rentItem,
         savedForLater,
         removeSaved,
         activeRentals,
-        removeRental
+        removeRental,
+        searchText,
+        setSearchText
       }}>
       {children}
     </RentContext.Provider>
@@ -239,8 +264,8 @@ export const RentProvider = ({children}) => {
 export const useRent = () => {
   const context = useContext(RentContext);
   return {
-    modalState: context.modalState,
-    setModalState: context.setModalState,
+    loginModal: context.loginModal,
+    setLoginModal: context.setLoginModal,
     currentUser: context.currentUser,
     addUser: context.addUser,
     checkUser: context.checkUser,
@@ -248,14 +273,16 @@ export const useRent = () => {
     route: context.route,
     changeRoute: context.changeRoute,
     signOut: context.signOut,
-    openModal: context.openModal,
+    openLoginModal: context.openLoginModal,
     equipment: context.equipment,
     saveItem: context.saveItem,
     rentItem: context.rentItem,
     savedForLater: context.savedForLater,
     removeSaved: context.removeSaved,
     activeRentals: context.activeRentals,
-    removeRental: context.removeRental
+    removeRental: context.removeRental,
+    searchText: context.searchText,
+    setSearchText: context.setSearchText
   }
 }
 
