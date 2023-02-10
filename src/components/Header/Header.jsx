@@ -7,7 +7,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Header = () => {
-  const { loggedIn, changeRoute, openLoginModal, signOut, setSearchText } = useRent();
+  const { loggedIn, route, changeRoute, openLoginModal, signOut, setSearchText } = useRent();
   return (
     <div className='header-wrapper'>
       <div className='header-search'>
@@ -19,6 +19,7 @@ const Header = () => {
       </div>
       {loggedIn ?
         <div className='header-auth'>
+          {route === 'profile' && <p onClick={() => changeRoute('home')}>Home</p>}
           <p onClick={() => changeRoute('profile')}>Profile</p>
           <p onClick={() => {
             signOut()

@@ -38,7 +38,7 @@ const Home = () => {
         })}
       </div>
       {productModal && <div className="description-modal">
-        <img src={x} onClick={() => setModal(false)}></img>
+        <img src={x} onClick={() => setProductModal(false)}></img>
         <h3>{currentItem.name}</h3>
         <img className='product-image' src={currentItem.image} alt={currentItem.name} />
         <p>{currentItem.description}</p>
