@@ -6,9 +6,8 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
-  const { loginModal, setLoginModal, addUser, checkUser } = useRent();
+  const { loginModal, setLoginModal, addUser, checkUser, authModalType, setAuthModalType } = useRent();
 
-  const [window, setWindow] = useState('login');
   const [errorModal, setErrorModal] = useState(false);
   const [nameInput, setNameInput] = useState('');
   const [phoneInput, setPhoneInput] = useState('');
@@ -82,31 +81,37 @@ const Login = () => {
 
   return (
     <div className={loginModal ? 'login-modal' : 'login-modal hide'}>
-      {window === 'login' ?
+      {authModalType === 'signin' ?
         <>
+          <h2>Sign In</h2>
           <img src={x} onClick={() => setLoginModal(false)}></img>
           <form className='login-inputs' onSubmit={(e) => submitLogin(e)}>
-            <label>email<input type="text" value={emailInput} onChange={(e) => setEmailInput(e.target.value)}/></label>
-            <label>password<input type="text" value={passwordInput} onChange={(e) => setPasswordInput(e.target.value)}/></label>
-            <input type='submit' />
+            <input placeholder='Email' type="text" value={emailInput} onChange={(e) => setEmailInput(e.target.value)}/>
+            <input placeholder='Password' type="password" value={passwordInput} onChange={(e) => setPasswordInput(e.target.value)}/>
+            <input className='submit-btn' type='submit' />
           </form>
-          <button onClick={() => setWindow('signup')}>Don't have an Account? Sign Up...</button>
+          <button onClick={() => setAuthModalType('create')}>Don't have an Account? Sign Up...</button>
         </>
       :
         <>
+          <h2>Create Account</h2>
           <img src={x} onClick={() => setLoginModal(false)}></img>
           <form className='login-inputs' onSubmit={(e) => submitSignup(e)}>
-            <label>name<input type="text" value={nameInput} onChange={(e) => setNameInput(e.target.value)}/></label>
-            <label>phone number<input type="text" value={phoneInput} onChange={(e) => setPhoneInput(e.target.value)}/></label>
-            <label>email<input type="text" value={emailInput} onChange={(e) => setEmailInput(e.target.value)}/></label>
-            <label>password<input type="text" value={passwordInput} onChange={(e) => setPasswordInput(e.target.value)}/></label>
-            <label>confirm password<input type="text" value={confirmInput} onChange={(e) => setConfirmInput(e.target.value)}/></label>
+            <input placeholder='Name' type="text" value={nameInput} onChange={(e) => setNameInput(e.target.value)}/>
+            <input placeholder='Phone Number' type="text" value={phoneInput} onChange={(e) => setPhoneInput(e.target.value)}/>
+            <input placeholder='Email' type="text" value={emailInput} onChange={(e) => setEmailInput(e.target.value)}/>
+            <input placeholder='Password' type="password" value={passwordInput} onChange={(e) => setPasswordInput(e.target.value)}/>
+            <input placeholder='Confirm Password' type="password" value={confirmInput} onChange={(e) => setConfirmInput(e.target.value)}/>
             <p className={errorModal ? 'submit-error' : 'submit-error hide'} ></p>
-            <input type='submit' />
+            <input className='submit-btn' type='submit' />
           </form>
-          <button onClick={() => setWindow('login')}>Have an Account? Log In...</button>
+          <button onClick={() => setAuthModalType('signin')}>Have an Account? Log In...</button>
         </>
-      }  
+      }
+      
+      {/* <p onClick={() => {
+        localStorage.setItem('user', undefined)
+      }}>Create Fake User in LocalStorage</p> */}
     </div>
   );
 }

@@ -1,0 +1,83 @@
+.account-wrapper {
+  display: flex;
+  gap: 40px;
+  justify-content: flex-start;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.account-sidebar {
+  min-width: 200px;
+  border-top: 1px solid black;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+  height: 100%;
+  width: 15%;
+  display: flex;
+  gap: 0;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.sidebar-item {
+  height: 50px;
+  padding-left: 20px;
+}
+
+.sidebar-item:hover {
+  cursor: pointer;
+  color: white;
+  background-color: darkgray;
+  transition: ease-in-out .1s;
+}
+
+.user-info,
+.active-rentals,
+.saved-for-later {
+  width: 70%;
+  margin-right: 20px;
+}
+
+.user-info div,
+.user-info p,
+.user-info h3 {
+  width: 75%;
+  text-align: left;
+}
+
+.active-rentals,
+.saved-for-later {
+  text-align: center;
+  border: 1px solid black;
+  margin: 10px;
+}
+
+.active-rentals h2,
+.saved-for-later h2 {
+  font-weight: 600;
+  font-size: 20px;
+}
+
+.active-rental-wrapper,
+.saved-items-wrapper {
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+
+.account-rental-item,
+.account-saved-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  border: 1px solid black;
+  margin: 10px;
+  padding: 20px;
+  width: 200px;
+}
+
+.account-rental-item img,
+.account-saved-item img{
+  width: 80%;
+  object-fit: cover;
+}

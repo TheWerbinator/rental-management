@@ -1,6 +1,10 @@
 .footer-wrapper {
-  margin-top: 20px;
+  margin: 0 auto;
   display: flex;
   justify-content: space-evenly;
   background-color: lightgrey;
+  position: fixed;
+  bottom: 0px;
+  left: 0%;
+  right: 0%;
 }

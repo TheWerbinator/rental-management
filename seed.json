@@ -17,7 +17,7 @@
       "name": "Shawn",
       "email": "thewerbinator@shawn.com",
       "password": "asdf123!",
-      "phone": "8015555555",
+      "phone": "",
       "payment": {
         "nameOnCard": "",
         "cardNumber": "",
@@ -30,7 +30,7 @@
       "name": "asdf",
       "email": "test@user.com",
       "password": "asdf123!",
-      "phone": "4358675309",
+      "phone": "",
       "payment": {
         "nameOnCard": "",
         "cardNumber": "",

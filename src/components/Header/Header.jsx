@@ -7,7 +7,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Header = () => {
-  const { loggedIn, route, changeRoute, openLoginModal, signOut, setSearchText } = useRent();
+  const { loggedIn, route, changeRoute, loginModalSwitch, signOut, setSearchText, authModalType, setAuthModalType } = useRent();
   return (
     <div className='header-wrapper'>
       <div className='header-search'>
@@ -19,8 +19,8 @@ const Header = () => {
       </div>
       {loggedIn ?
         <div className='header-auth'>
-          {route === 'profile' && <p onClick={() => changeRoute('home')}>Home</p>}
-          <p onClick={() => changeRoute('profile')}>Profile</p>
+          {route === 'account' && <p onClick={() => changeRoute('home')}>Home</p>}
+          <p onClick={() => changeRoute('account')}>Account</p>
           <p onClick={() => {
             signOut()
             toast.success("Logged Out", {
@@ -37,7 +37,18 @@ const Header = () => {
         </div>
       : 
         <div className='header-auth'>
-          <p onClick={() => openLoginModal()}>Sign In</p>
+          <p onClick={() => {
+            authModalType === 'create' ? 
+            setAuthModalType('signin') :
+            loginModalSwitch()
+            setAuthModalType('signin')
+          }}>Sign In</p>
+          <p onClick={() => {
+            authModalType === 'signin' ? 
+            setAuthModalType('create') :
+            loginModalSwitch()
+            setAuthModalType('create')
+          }}>Create Account</p>
         </div>
       }
     </div>

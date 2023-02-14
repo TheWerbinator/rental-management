@@ -1,10 +1,9 @@
 {
   "users": [
     {
-      "name": "Braden",
-      "email": "Verla_Rolfson@hotmail.com",
+      "name": "Test",
+      "email": "test@user.com",
       "password": "asdf123!",
-      "phone": "236-596-2585",
       "payment": {
         "nameOnCard": "",
         "cardNumber": "",
@@ -14,10 +13,9 @@
       "id": 0
     },
     {
-      "name": "Amina",
-      "email": "Cathryn_Grant89@hotmail.com",
+      "name": "Alphonso",
+      "email": "Christophe_Fahey@gmail.com",
       "password": "asdf123!",
-      "phone": "303-192-1519",
       "payment": {
         "nameOnCard": "",
         "cardNumber": "",
@@ -25,58 +23,149 @@
         "securityCode": ""
       },
       "id": 1
-    },
-    {
-      "name": "Testy McTestperson",
-      "email": "shawnthewerber@gmail.com",
-      "password": "asdf",
-      "phone": "7026955882",
-      "payment": {
-        "nameOnCard": "",
-        "cardNumber": "",
-        "exp": "",
-        "securityCode": ""
-      },
-      "id": 2
     }
   ],
   "equipment": [
     {
-      "name": "Eugenia",
-      "description": "Corporate Cisgender Maryland Alaska unrealistic Shirt set",
+      "name": "Carli",
+      "description": "Fresh Tricycle lawmaker Berkshire hierarchy mesh Oaks",
       "isRented": false,
-      "image": "/src/assets/flatbed_with_ramps.png",
+      "image": "/src/assets/horse_trailer.png",
       "id": 0
     },
     {
-      "name": "Chadrick",
-      "description": "dolorum Guarani Strategist time lavender",
+      "name": "Christy",
+      "description": "Plastic Orchestrator withdrawal Chief SDD Lempira hearsay",
       "isRented": false,
-      "image": "/src/assets/horse_trailer.png",
+      "image": "/src/assets/enclosed_trailer.png",
       "id": 1
     },
     {
-      "name": "Andy",
-      "description": "plush global ivory relationships gadzooks Gold Bergnaum Bicycle",
+      "name": "Petra",
+      "description": "multimedia Avon backing olive Cab parse Cis quantify",
       "isRented": false,
-      "image": "/src/assets/pickup_truck.png",
+      "image": "/src/assets/trailer.png",
       "id": 2
     },
     {
-      "name": "Dawn",
-      "description": "Bicycle optimal Handcrafted CLI applications Pop Non",
+      "name": "Oma",
+      "description": "withdrawal Electronic Manganese holistic Convertible",
       "isRented": false,
-      "image": "/src/assets/enclosed_trailer.png",
+      "image": "/src/assets/pickup_truck.png",
       "id": 3
     },
     {
-      "name": "Frederick",
-      "description": "tesla Tuna VGA Borders payment Chair Aluminium",
+      "name": "Catherine",
+      "description": "BMX array Wooden misreading West",
+      "isRented": false,
+      "image": "/src/assets/trailer.png",
+      "id": 4
+    },
+    {
+      "name": "Henry",
+      "description": "quantify Southeast second Configuration capacity sky violet invoice",
+      "isRented": false,
+      "image": "/src/assets/enclosed_trailer.png",
+      "id": 5
+    },
+    {
+      "name": "Stefanie",
+      "description": "circuit Market Jewelery Eastvale Card Electric Savannah",
+      "isRented": false,
+      "image": "/src/assets/enclosed_trailer.png",
+      "id": 6
+    },
+    {
+      "name": "Nathanial",
+      "description": "gossip generate pish Davie Graphic Liaison Ameliorated",
       "isRented": false,
       "image": "/src/assets/pickup_truck.png",
-      "id": 4
+      "id": 7
+    },
+    {
+      "name": "Kristopher",
+      "description": "ideal tan Metal Georgia Johnny whereas Bicycle jaunty",
+      "isRented": false,
+      "image": "/src/assets/trailer.png",
+      "id": 8
+    },
+    {
+      "name": "Eloisa",
+      "description": "Plastic following Directives identical tan ea uniform Functionality",
+      "isRented": false,
+      "image": "/src/assets/enclosed_trailer.png",
+      "id": 9
+    },
+    {
+      "name": "Deon",
+      "description": "as provided Northwest array Awesome propose connect",
+      "isRented": false,
+      "image": "/src/assets/pickup_truck.png",
+      "id": 10
+    },
+    {
+      "name": "Moises",
+      "description": "Gloves gray transmitter up sour",
+      "isRented": false,
+      "image": "/src/assets/flatbed_with_ramps.png",
+      "id": 11
+    },
+    {
+      "name": "Mohammed",
+      "description": "yahoo Tricycle Mazda West jar",
+      "isRented": false,
+      "image": "/src/assets/horse_trailer.png",
+      "id": 12
+    },
+    {
+      "name": "Sheridan",
+      "description": "Engineer siege Northeast Hybrid JBOD payment World",
+      "isRented": false,
+      "image": "/src/assets/enclosed_trailer.png",
+      "id": 13
+    },
+    {
+      "name": "Christina",
+      "description": "Rupee Bronze Gloves Hybrid green",
+      "isRented": false,
+      "image": "/src/assets/frontloader.png",
+      "id": 14
+    },
+    {
+      "name": "Crystel",
+      "description": "East Ruthenium newton Neither blue",
+      "isRented": false,
+      "image": "/src/assets/enclosed_trailer.png",
+      "id": 15
+    },
+    {
+      "name": "Chauncey",
+      "description": "female invoice Home Hybrid Electric platforms omnis",
+      "isRented": false,
+      "image": "/src/assets/flatbed_with_ramps.png",
+      "id": 16
+    },
+    {
+      "name": "Rosendo",
+      "description": "transmitter considering Internal Cambridgeshire input",
+      "isRented": false,
+      "image": "/src/assets/frontloader.png",
+      "id": 17
+    },
+    {
+      "name": "Emily",
+      "description": "azure functionalities gah powerfully female failing during Road",
+      "isRented": false,
+      "image": "/src/assets/pickup_truck.png",
+      "id": 18
     }
   ],
-  "savedForLater": [],
+  "savedForLater": [
+    {
+      "userId": 0,
+      "equipmentId": 16,
+      "id": 1
+    }
+  ],
   "activeRentals": []
 }

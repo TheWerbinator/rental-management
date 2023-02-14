@@ -4,7 +4,7 @@ import { faker } from "@faker-js/faker";
 const { capitalize, range, sample } = _;
 
 const userAmount = 2;
-const equipmentAmount = 5;
+const equipmentAmount = 20;
 const images = [
   "/src/assets/trailer.png",
   "/src/assets/enclosed_trailer.png",
@@ -19,7 +19,7 @@ const db = {
     name: `${capitalize(faker.name.firstName())}`,
     email: faker.internet.email(),
     password: "asdf123!",
-    phone: faker.phone.number('###-###-####'),
+    phone: '',
     payment: {
       nameOnCard: '',
       cardNumber: '',

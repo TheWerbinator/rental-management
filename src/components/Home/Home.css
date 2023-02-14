@@ -1,17 +1,43 @@
+.hero-wrapper {
+  width: 100%;
+  height: 200px;
+}
+
+.hero-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+h2 {
+  text-transform: uppercase;
+  font-weight: 600;
+  text-align: center;
+}
+
 .equipment-gallery {
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   justify-content: space-evenly;
+  background-color: grey;
+  padding-bottom: 20px;
+  margin: 0;
 }
 
 .equipment-gallery-item {
+  position: relative;
   display: flex;
+  flex-wrap: wrap;
   flex-direction: column;
   align-items: center;
   width: 200px;
   border: 1px solid black;
   padding: 20px;
   margin-top: 20px;
+  margin-bottom: 50px;
+  background-color: white;
 }
 
 .equipment-gallery-item img {
@@ -19,34 +45,45 @@
   height: 80px;
   object-fit: contain;
   margin: 10px;
+  cursor: pointer;
 }
 
-.item-btn-wrapper button{
-  margin: 5px;
+.equipment-gallery-item img:nth-child(1) {
+  position: absolute;
+  top: -15%;
+  right: 0%;
+  width: 25px;
 }
 
-.description-modal {
+.hidden {
+  display: none;
+  visibility: hidden;
+}
+
+.product-modal {
+  position: fixed;
+  top: 20%;
+  left: 0%;
+  right: 0%;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   width: 50vh;
   height: 50vh;
   border-radius: 10px;
   z-index: 100;
   background-color: grey;
-  position: absolute;
-  top: 10%;
-  left: 25%;
-  right: 25%;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
   margin: 0 auto;
+  color: white;
 }
 
-.description-modal h3 {
+.product-modal h3 {
   font-size: 36px;
 }
 
-.description-modal img:nth-child(1) {
+.product-modal img:nth-child(1) {
   width: 20px;
   height: 20px;
   position: absolute;
@@ -55,11 +92,28 @@
   cursor: pointer;
 }
 
-.description-modal button {
+.product-modal .product-image {
+  width: 80%;
+  object-fit: cover;
+}
+
+.item-btn-wrapper{
+  width: 80%;
+  display: flex;
+  justify-content: space-evenly;
+  margin-bottom: 20px;
+}
+
+.item-btn-wrapper button{
+  cursor: pointer;
+  margin: 5px;
+  padding: 5px 15px;
+  border: 1px solid black;
+  border-radius: 5px;
   font-size: 18px;
 }
 
-.description-modal .product-image {
-  width: 80%;
-  object-fit: cover;
+.item-btn-wrapper .saved-notice{
+  font-size: 16px;
+  color: white;
 }

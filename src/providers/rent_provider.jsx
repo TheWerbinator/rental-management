@@ -11,6 +11,7 @@ export const RentProvider = ({children}) => {
   const [route, setRoute] = useState('home');
   const [loggedIn, setLoggedIn] = useState(false);
   const [loginModal, setLoginModal] = useState(false);
+  const [authModalType, setAuthModalType] = useState('login');
   const [searchText, setSearchText] = useState('');
 
   const fetchDb = async (url) => {
@@ -34,9 +35,9 @@ export const RentProvider = ({children}) => {
       setActiveRentals(result);
     });
 
-    const maybeUser = localStorage.getItem('user');
-    if(maybeUser) {
-      setCurrentUser(JSON.parse(maybeUser))
+    let localUser = localStorage.getItem('user');
+    if(localUser !== null && localUser !== 'undefined') {
+      setCurrentUser(JSON.parse(localUser))
       setLoggedIn(true)
     }
   }, []);
@@ -111,7 +112,7 @@ export const RentProvider = ({children}) => {
     setRoute(route)
   }
 
-  const openLoginModal = () => {
+  const loginModalSwitch = () => {
     loginModal === false ? setLoginModal(true) : setLoginModal(false);
   }
 
@@ -227,8 +228,6 @@ export const RentProvider = ({children}) => {
       localStorage.setItem('user', JSON.stringify(userInQuestion[0]))
       setLoggedIn(true);
       return true;
-    } else {
-      console.log('checkUser fetch returned more than one user or none at all')
     }
     return false;
   }
@@ -245,7 +244,7 @@ export const RentProvider = ({children}) => {
         route,
         changeRoute,
         signOut,
-        openLoginModal,
+        loginModalSwitch,
         equipment,
         saveItem,
         rentItem,
@@ -254,7 +253,9 @@ export const RentProvider = ({children}) => {
         activeRentals,
         removeRental,
         searchText,
-        setSearchText
+        setSearchText,
+        authModalType,
+        setAuthModalType
       }}>
       {children}
     </RentContext.Provider>
@@ -273,7 +274,7 @@ export const useRent = () => {
     route: context.route,
     changeRoute: context.changeRoute,
     signOut: context.signOut,
-    openLoginModal: context.openLoginModal,
+    loginModalSwitch: context.loginModalSwitch,
     equipment: context.equipment,
     saveItem: context.saveItem,
     rentItem: context.rentItem,
@@ -282,7 +283,9 @@ export const useRent = () => {
     activeRentals: context.activeRentals,
     removeRental: context.removeRental,
     searchText: context.searchText,
-    setSearchText: context.setSearchText
+    setSearchText: context.setSearchText,
+    authModalType: context.authModalType,
+    setAuthModalType: context.setAuthModalType
   }
 }
 
