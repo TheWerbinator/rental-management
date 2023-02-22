@@ -42,9 +42,9 @@ export const RentProvider = ({children}) => {
     }
   }, []);
 
-  const rentItem = (item) => {
+  const rentItem = async (item) => {
     if(loggedIn) {
-      addActiveRental(item, currentUser.id);
+      await addActiveRental(item, currentUser.id);
     } else setLoginModal(true);
   }
 

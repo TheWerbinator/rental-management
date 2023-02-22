@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useRent } from '../../providers/rent_provider';
+import { ToastContainer, toast } from 'react-toastify';
 import './Home.css';
 import x from '../../assets/close.png'
 import bookmark from '../../assets/bookmark.png'
 
 const Home = () => {
-  const { currentUser, equipment, rentItem, saveItem, savedForLater, searchText, loggedIn, loginModalSwitch, setAuthModalType } = useRent();
+  const { currentUser, equipment, rentItem, saveItem, savedForLater, activeRentals, searchText, loggedIn, loginModalSwitch, setAuthModalType } = useRent();
   const remainingEquipment = equipment.filter((item) => !item.isRented);
   const [productModal, setProductModal] = useState(false)
   const [currentItem, setCurrentItem] = useState({})
@@ -45,10 +46,36 @@ const Home = () => {
           <img className='product-image' src={currentItem.image} alt={currentItem.name} />
           <p>{currentItem.description}</p>
           <div className="item-btn-wrapper">
-            <button onClick={() => {
+            <button onClick={async () => {
               if(loggedIn) {
                 setProductModal(false)
-                rentItem(currentItem)
+                const currentRentals = activeRentals.length;
+                console.log('before', currentRentals);
+                await rentItem(currentItem)
+                console.log('after', activeRentals.length);
+                if(currentRentals < activeRentals.length) {
+                  toast.success('Equipment Rented', {
+                    position: "top-center",
+                    autoClose: 2000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                  })
+                } else {
+                  toast.error('Error Submitting Rental', {
+                    position: "top-center",
+                    autoClose: 2000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                  })
+                }
               } else {
                 setAuthModalType('signin')
                 setProductModal(false)
