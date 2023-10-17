@@ -51,9 +51,9 @@ export const RentProvider = ({ children }) => {
         setCurrentUser(JSON.parse(localUser));
         setLoggedIn(true);
       }
-
-      renderChecker.current = true;
     }
+
+    renderChecker.current = true;
   }, []);
 
   const rentItem = async (item) => {
