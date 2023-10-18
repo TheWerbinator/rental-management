@@ -22,11 +22,18 @@ export const RentProvider = ({ children }) => {
 
   const renderChecker = useRef(false);
 
-  const fetchDb = async (url) => {
+  const getDb = async (url) => {
+    const options = {
+      method: 'GET',
+      // mode: "cors",
+      // credentials: "omit",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }
     try {
-      const response = await fetch(url);
-      const jsonResponse = await response.json();
-      return jsonResponse;
+      const response = await fetch(url, options).then((res) => res.json());
+      return response;
     } catch (error) {
       console.error(error);
     }
@@ -34,17 +41,17 @@ export const RentProvider = ({ children }) => {
 
   useEffect(() => {
     if (renderChecker.current) {
-      fetchDb(`http://localhost:3000/equipment`).then((result) => {
+      getDb(`http://localhost:3000/equipment`).then((result) => {
         setEquipment(result);
       });
-      fetchDb(`http://localhost:3000/saved:${currentUser}`).then((result) => {
-        setSavedForLater(result);
-      });
-      fetchDb(`http://localhost:3000/rentals/:${currentUser}`).then(
-        (result) => {
-          setActiveRentals(result);
-        }
-      );
+      // getDb(`http://localhost:3000/saved:${currentUser}`).then((result) => {
+      //   setSavedForLater(result);
+      // });
+      // getDb(`http://localhost:3000/rentals/:${currentUser}`).then(
+      //   (result) => {
+      //     setActiveRentals(result);
+      //   }
+      // );
 
       let localUser = localStorage.getItem('user');
       if (localUser !== null && localUser !== 'undefined') {
@@ -74,20 +81,24 @@ export const RentProvider = ({ children }) => {
         headers: {
           'Content-type': 'application/json; charset=UTF-8',
         },
+        // mode: "cors",
+        // credentials: "include",
       });
       await fetch(`http://localhost:3000/equipment/${item.id}`, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
         method: 'PATCH',
         body: JSON.stringify({
           isRented: true,
         }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // mode: "cors",
+        // credentials: "include",
       });
-      await fetchDb('http://localhost:3000/rentals').then((result) => {
+      await getDb('http://localhost:3000/rentals').then((result) => {
         setActiveRentals(result);
       });
-      await fetchDb('http://localhost:3000/equipment').then((result) => {
+      await getDb('http://localhost:3000/equipment').then((result) => {
         setEquipment(result);
       });
     } catch (error) {
@@ -113,8 +124,10 @@ export const RentProvider = ({ children }) => {
         headers: {
           'Content-type': 'application/json; charset=UTF-8',
         },
+        // mode: "cors",
+        // credentials: "include",
       });
-      await fetchDb(`http://localhost:3000/saved/:${currentUser}`).then(
+      await getDb(`http://localhost:3000/saved/:${currentUser}`).then(
         (result) => {
           setSavedForLater(result);
         }
@@ -143,20 +156,24 @@ export const RentProvider = ({ children }) => {
     try {
       await fetch(`http://localhost:3000/rentals/${rentalId}`, {
         method: 'DELETE',
+        mode: "cors",
+        credentials: "include",
       });
       await fetch(`http://localhost:3000/equipment/${item.id}`, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
         method: 'PATCH',
         body: JSON.stringify({
           isRented: false,
         }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        mode: "cors",
+        credentials: "include",
       });
-      await fetchDb('http://localhost:3000/activeRentals').then((result) => {
+      await getDb('http://localhost:3000/activeRentals').then((result) => {
         setActiveRentals(result);
       });
-      await fetchDb('http://localhost:3000/equipment').then((result) => {
+      await getDb('http://localhost:3000/equipment').then((result) => {
         setEquipment(result);
       });
     } catch (error) {
@@ -168,8 +185,10 @@ export const RentProvider = ({ children }) => {
     try {
       await fetch(`http://localhost:3000/saved/${savedId}`, {
         method: 'DELETE',
+        mode: "cors",
+        credentials: "include",
       });
-      await fetchDb('http://localhost:3000/saved').then((result) => {
+      await getDb('http://localhost:3000/saved').then((result) => {
         setSavedForLater(result);
       });
     } catch (error) {
@@ -185,6 +204,8 @@ export const RentProvider = ({ children }) => {
         headers: {
           'Content-type': 'application/json; charset=UTF-8',
         },
+        mode: "cors",
+        credentials: "include",
       });
       let userInQuestion = [];
       await usersFetch().then((response) => {
