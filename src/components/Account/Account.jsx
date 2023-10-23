@@ -38,32 +38,28 @@ const Account = () => {
                   </>}
               </div> */}
             </div>
-
-            : accountRoute === 'rentals' ?
+          : accountRoute === 'rentals' ?
             <div className="active-rentals">
               <h2>Active Rentals</h2>
-              {activeRentals.filter((entry) => entry.userId === currentUser.id).length ? 
-                <div className="active-rental-wrapper">
-                  {activeRentals.map((rental) => {
-                    return <div id={rental.id}>
-                      {rental.userId === currentUser.id &&
-                      equipment.map((item) => {
-                        return rental.equipmentId === item.id &&
-                          <div className='account-rental-item' id={item.id}>
-                            <h3>{item.name}</h3>
-                            <img src={item.image} alt={item.name} />
-                            <p>{item.description}</p>
-                            <button onClick={() => removeRental(rental.id, item)}>End Rental</button>
-                          </div>
-                      })}
-                      </div>
-                  })}
-                </div> : <p>No equipment currently rented</p>}
+                {activeRentals.map((rental) => {
+                  console.log(rental);
+                  return <div id={rental.id}>
+                    {rental.userEmail === currentUser.email && equipment.map((item) => {
+                      return rental.id === item.id &&
+                        <div className='account-rental-item' id={item.id}>
+                          <h3>{item.name}</h3>
+                          <img src={item.image} alt={item.name} />
+                          <p>{item.description}</p>
+                          <button onClick={() => removeRental(rental.id, item)}>End Rental</button>
+                        </div>
+                    })}
+                    </div>
+                })}
             </div>
-            : 
+          : 
             <div className="saved-for-later">
               <h2>Saved for Later</h2>
-              {savedForLater.filter((entry) => entry.userId === currentUser.id).length ? 
+              {savedForLater.length ? 
                 <div className="saved-items-wrapper">
                   {savedForLater.map((savedItem) => {
                     return <div id={savedItem.id}>

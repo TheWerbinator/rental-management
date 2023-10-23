@@ -17,7 +17,8 @@ const Login = () => {
 
   const submitLogin = async (e) => {
     e.preventDefault();
-    if(await checkUser(emailInput, passwordInput) === true) {
+    const response = await checkUser(emailInput, passwordInput)
+    if(response === true) {
       setLoginModal(false)
       toast.success('Logged In', {
         position: "top-center",
@@ -29,7 +30,7 @@ const Login = () => {
         progress: undefined,
         theme: "dark",
       })
-    } else {
+    } else if(response === false){
       setErrorModal(true)
       toast.error('Incorrect Login', {
         position: "top-center",

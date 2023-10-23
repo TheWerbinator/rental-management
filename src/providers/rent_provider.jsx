@@ -4,6 +4,7 @@ import React, {
   createContext,
   useContext,
   useRef,
+  useMemo
 } from 'react';
 
 const RentContext = createContext({});
@@ -20,16 +21,17 @@ export const RentProvider = ({ children }) => {
   const [authModalType, setAuthModalType] = useState('login');
   const [searchText, setSearchText] = useState('');
 
-  const renderChecker = useRef(false);
+  const renderChecker = useRef(true);
+  // const userChecker = useRef(false);
 
   const getDb = async (url) => {
     const options = {
       method: 'GET',
       // mode: "cors",
       // credentials: "omit",
-      headers: {
-        "Content-Type": "application/json"
-      }
+      // headers: {
+      //   "Content-Type": "application/json"
+      // }
     }
     try {
       const response = await fetch(url, options).then((res) => res.json());
@@ -39,29 +41,50 @@ export const RentProvider = ({ children }) => {
     }
   };
 
-  useEffect(() => {
+  useEffect(async () => {
     if (renderChecker.current) {
       getDb(`http://localhost:3000/equipment`).then((result) => {
         setEquipment(result);
       });
-      // getDb(`http://localhost:3000/saved:${currentUser}`).then((result) => {
-      //   setSavedForLater(result);
-      // });
-      // getDb(`http://localhost:3000/rentals/:${currentUser}`).then(
-      //   (result) => {
-      //     setActiveRentals(result);
-      //   }
-      // );
 
       let localUser = localStorage.getItem('user');
       if (localUser !== null && localUser !== 'undefined') {
-        setCurrentUser(JSON.parse(localUser));
-        setLoggedIn(true);
+        const newestAddition = {
+          email: localUser.email,
+          password: localUser.passwordHash
+        }
+        console.log(newestAddition);
+        await fetch(`http://localhost:3000/auth/login`, {
+          method: 'POST',
+          body: JSON.stringify(newestAddition),
+          headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+          },
+          // mode: "cors",
+          // credentials: "include",
+        }).then(() => {
+          setCurrentUser(JSON.parse(localUser));
+          setLoggedIn(true);
+        })
+        
       }
     }
 
-    renderChecker.current = true;
+    renderChecker.current = false;
   }, []);
+
+  useEffect(() => {
+    if (currentUser.email) {
+      getDb(`http://localhost:3000/saved/${currentUser.email}`).then((result) => {
+        setSavedForLater(result);
+      })
+      getDb(`http://localhost:3000/rentals/${currentUser.email}`).then((result) => {
+        setActiveRentals(result);
+      })
+    }
+    
+    // userChecker.current = true;
+  }, [currentUser])
 
   const rentItem = async (item) => {
     if (loggedIn) {
@@ -108,17 +131,17 @@ export const RentProvider = ({ children }) => {
 
   const saveItem = (item) => {
     if (loggedIn) {
-      addSavedForLater(item, currentUser.id);
+      addSavedForLater(item, currentUser.email);
     } else setLoginModal(true);
   };
 
-  const addSavedForLater = async (item, idOfUser) => {
+  const addSavedForLater = async (item, email) => {
     const newestAddition = {
-      userId: idOfUser,
-      equipmentId: item.id,
+      userEmail: email,
+      rentalId: item.id,
     };
     try {
-      await fetch(`http://localhost:3000/saved/:${currentUser}`, {
+      await fetch(`http://localhost:3000/saved`, {
         method: 'POST',
         body: JSON.stringify(newestAddition),
         headers: {
@@ -127,7 +150,7 @@ export const RentProvider = ({ children }) => {
         // mode: "cors",
         // credentials: "include",
       });
-      await getDb(`http://localhost:3000/saved/:${currentUser}`).then(
+      await getDb(`http://localhost:3000/saved/${currentUser.email}`).then(
         (result) => {
           setSavedForLater(result);
         }
@@ -156,8 +179,8 @@ export const RentProvider = ({ children }) => {
     try {
       await fetch(`http://localhost:3000/rentals/${rentalId}`, {
         method: 'DELETE',
-        mode: "cors",
-        credentials: "include",
+        // mode: "cors",
+        // credentials: "include",
       });
       await fetch(`http://localhost:3000/equipment/${item.id}`, {
         method: 'PATCH',
@@ -167,8 +190,8 @@ export const RentProvider = ({ children }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        mode: "cors",
-        credentials: "include",
+        // mode: "cors",
+        // credentials: "include",
       });
       await getDb('http://localhost:3000/activeRentals').then((result) => {
         setActiveRentals(result);
@@ -185,8 +208,8 @@ export const RentProvider = ({ children }) => {
     try {
       await fetch(`http://localhost:3000/saved/${savedId}`, {
         method: 'DELETE',
-        mode: "cors",
-        credentials: "include",
+        // mode: "cors",
+        // credentials: "include",
       });
       await getDb('http://localhost:3000/saved').then((result) => {
         setSavedForLater(result);
@@ -204,8 +227,8 @@ export const RentProvider = ({ children }) => {
         headers: {
           'Content-type': 'application/json; charset=UTF-8',
         },
-        mode: "cors",
-        credentials: "include",
+        // mode: "cors",
+        // credentials: "include",
       });
       let userInQuestion = [];
       await usersFetch().then((response) => {
@@ -244,34 +267,25 @@ export const RentProvider = ({ children }) => {
     });
   };
 
-  const usersFetch = async () => {
-    try {
-      const response = await fetch(`http://localhost:3000/users/`);
-      const jsonResponse = await response.json();
-      return jsonResponse;
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  // const userFetch = async (email, pw) => {
+  //   try {
+  //     const response = await fetch(`http://localhost:3000/users/${email}`).then(res => res.json());
+  //     return response
+  //   } catch (error) {
+  //     console.error(error)
+  //   }
+  // };
 
   const checkUser = async (email, pw) => {
-    const users = await usersFetch();
-    const userInQuestion = users.filter((user) => {
-      if (user.email === email && user.password === pw) {
-        return user;
-      }
-    });
-    if (
-      userInQuestion.length &&
-      userInQuestion[0].password === pw &&
-      userInQuestion.length === 1
-    ) {
-      setCurrentUser(userInQuestion[0]);
-      localStorage.setItem('user', JSON.stringify(userInQuestion[0]));
-      setLoggedIn(true);
-      return true;
-    }
-    return false;
+    await userFetch(email, pw).then((user) => {
+      if (user.email === email) {
+        setCurrentUser(user)
+        localStorage.setItem('user', JSON.stringify(user))
+        setLoggedIn(true)
+        loginModalSwitch()
+        return true
+      } else return false
+    })
   };
 
   return (
