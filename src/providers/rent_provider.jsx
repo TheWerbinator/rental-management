@@ -11,7 +11,8 @@ const RentContext = createContext({});
 
 // eslint-disable-next-line react/prop-types
 export const RentProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState({});
+  const [currentUser, setCurrentUser] = useState('');
+  const [userAccount, setUserAccount] = useState({});
   const [equipment, setEquipment] = useState([]);
   const [savedForLater, setSavedForLater] = useState([]);
   const [activeRentals, setActiveRentals] = useState([]);
@@ -24,6 +25,44 @@ export const RentProvider = ({ children }) => {
   const renderChecker = useRef(true);
   // const userChecker = useRef(false);
 
+  useEffect(() => {
+    if (renderChecker.current) {
+      getDb(`http://localhost:3000/equipment`).then((result) => {
+        setEquipment(result);
+      });
+
+      let localUser = localStorage.getItem('user');
+      if (localUser !== null && localUser !== 'undefined') {
+        localUserAuth(localUser).then((check) => {
+          if (check === true) {
+            setCurrentUser(localUser);
+            // setCurrentUser(localUser.split(`"`)[1]);
+            setLoggedIn(true);
+          }
+        });
+      }
+    }
+
+    renderChecker.current = false;
+  }, []);
+
+  useEffect(() => {
+    if (userAccount.email) {
+      getDb(`http://localhost:3000/saved/${userAccount.email}`).then(
+        (result) => {
+          setSavedForLater(result);
+        }
+      );
+      // getDb(`http://localhost:3000/rentals/${userAccount.email}`).then(
+      //   (result) => {
+      //     setActiveRentals(result);
+      //   }
+      // );
+    }
+
+    // userChecker.current = true;
+  }, [currentUser]);
+
   const getDb = async (url) => {
     const options = {
       method: 'GET',
@@ -32,7 +71,7 @@ export const RentProvider = ({ children }) => {
       // headers: {
       //   "Content-Type": "application/json"
       // }
-    }
+    };
     try {
       const response = await fetch(url, options).then((res) => res.json());
       return response;
@@ -41,54 +80,58 @@ export const RentProvider = ({ children }) => {
     }
   };
 
-  useEffect(async () => {
-    if (renderChecker.current) {
-      getDb(`http://localhost:3000/equipment`).then((result) => {
-        setEquipment(result);
+  const loginAuth = async (userToken) => {
+    let token = '';
+    let userInfo = {};
+    await fetch(`http://localhost:3000/auth/login`, {
+      method: 'POST',
+      body: JSON.stringify(userToken),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+      // mode: "cors",
+      // credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((response) => {
+        if (response.userInfo) {
+          userInfo = {
+            name: response.userInfo.name,
+            email: response.userInfo.email,
+          };
+          token = response.token;
+        }
       });
 
-      let localUser = localStorage.getItem('user');
-      if (localUser !== null && localUser !== 'undefined') {
-        const newestAddition = {
-          email: localUser.email,
-          password: localUser.passwordHash
-        }
-        console.log(newestAddition);
-        await fetch(`http://localhost:3000/auth/login`, {
-          method: 'POST',
-          body: JSON.stringify(newestAddition),
-          headers: {
-            'Content-type': 'application/json; charset=UTF-8',
-          },
-          // mode: "cors",
-          // credentials: "include",
-        }).then(() => {
-          setCurrentUser(JSON.parse(localUser));
-          setLoggedIn(true);
-        })
-        
-      }
-    }
+    setUserAccount(userInfo);
+    return token;
+  };
 
-    renderChecker.current = false;
-  }, []);
+  const localUserAuth = async (localUser) => {
+    let decision = false;
+    let user = {};
+    await fetch(`http://localhost:3000/auth/local`, {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+        Authorization: `Bearer ${localUser.split(`"`)[1]}`,
+      },
+      // mode: "cors",
+      // credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        decision = res[1];
+        user = res[0];
+      });
 
-  useEffect(() => {
-    if (currentUser.email) {
-      getDb(`http://localhost:3000/saved/${currentUser.email}`).then((result) => {
-        setSavedForLater(result);
-      })
-      getDb(`http://localhost:3000/rentals/${currentUser.email}`).then((result) => {
-        setActiveRentals(result);
-      })
-    }
-    
-    // userChecker.current = true;
-  }, [currentUser])
+    setUserAccount(user);
+    return decision;
+  };
 
   const rentItem = async (item) => {
     if (loggedIn) {
-      await addActiveRental(item, currentUser.id);
+      await addActiveRental(item, userAccount.email);
     } else setLoginModal(true);
   };
 
@@ -103,6 +146,7 @@ export const RentProvider = ({ children }) => {
         body: JSON.stringify(newestAddition),
         headers: {
           'Content-type': 'application/json; charset=UTF-8',
+          Authorization: `Bearer ${currentUser}`,
         },
         // mode: "cors",
         // credentials: "include",
@@ -131,26 +175,29 @@ export const RentProvider = ({ children }) => {
 
   const saveItem = (item) => {
     if (loggedIn) {
-      addSavedForLater(item, currentUser.email);
+      addSavedForLater(item, userAccount.email);
     } else setLoginModal(true);
   };
 
   const addSavedForLater = async (item, email) => {
+    const currentUserEmail = userAccount.email;
     const newestAddition = {
       userEmail: email,
-      rentalId: item.id,
+      savedId: item.id,
     };
     try {
-      await fetch(`http://localhost:3000/saved`, {
+      await fetch(`http://localhost:3000/saved/${currentUserEmail}`, {
         method: 'POST',
         body: JSON.stringify(newestAddition),
         headers: {
           'Content-type': 'application/json; charset=UTF-8',
+          // Authorization: `Bearer ${currentUser}`,
+          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFzZGZAdGVzdC5jb20iLCJuYW1lIjoiQXNkZiIsInBhc3N3b3JkIjoiJDJiJDEyJE1uL0R3ZzNkb0R3bTJEaFNWdkZoeGVXMm9BYXZUaU1sRVBISWtvamtQTGdxQ2RYaFdzbHBxIiwiaWF0IjoxNjk4MDc4NzIwfQ.PRVxoy-IYeW6k3siFVM51nyRdGt4WdZGFBnKzvQ1PQA`,
         },
         // mode: "cors",
         // credentials: "include",
       });
-      await getDb(`http://localhost:3000/saved/${currentUser.email}`).then(
+      await getDb(`http://localhost:3000/saved/${currentUserEmail}`).then(
         (result) => {
           setSavedForLater(result);
         }
@@ -179,6 +226,10 @@ export const RentProvider = ({ children }) => {
     try {
       await fetch(`http://localhost:3000/rentals/${rentalId}`, {
         method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${currentUser}`,
+        },
         // mode: "cors",
         // credentials: "include",
       });
@@ -189,6 +240,7 @@ export const RentProvider = ({ children }) => {
         }),
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${currentUser}`,
         },
         // mode: "cors",
         // credentials: "include",
@@ -208,12 +260,18 @@ export const RentProvider = ({ children }) => {
     try {
       await fetch(`http://localhost:3000/saved/${savedId}`, {
         method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${currentUser}`,
+        },
         // mode: "cors",
         // credentials: "include",
       });
-      await getDb('http://localhost:3000/saved').then((result) => {
-        setSavedForLater(result);
-      });
+      await getDb(`http://localhost:3000/saved/${userAccount.email}`).then(
+        (result) => {
+          setSavedForLater(result);
+        }
+      );
     } catch (error) {
       console.error(error);
     }
@@ -225,7 +283,8 @@ export const RentProvider = ({ children }) => {
         method: 'POST',
         body: JSON.stringify(user),
         headers: {
-          'Content-type': 'application/json; charset=UTF-8',
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${currentUser}`,
         },
         // mode: "cors",
         // credentials: "include",
@@ -252,13 +311,13 @@ export const RentProvider = ({ children }) => {
       name: name,
       email: email,
       password: password,
-      phone: phone,
-      payment: {
-        nameOnCard: '',
-        cardNumber: '',
-        exp: '',
-        securityCode: '',
-      },
+      // phone: phone,
+      // payment: {
+      //   nameOnCard: '',
+      //   cardNumber: '',
+      //   exp: '',
+      //   securityCode: '',
+      // },
     };
     await registerFetch(newestAddition).then((user) => {
       localStorage.setItem('user', JSON.stringify(user));
@@ -267,25 +326,22 @@ export const RentProvider = ({ children }) => {
     });
   };
 
-  // const userFetch = async (email, pw) => {
-  //   try {
-  //     const response = await fetch(`http://localhost:3000/users/${email}`).then(res => res.json());
-  //     return response
-  //   } catch (error) {
-  //     console.error(error)
-  //   }
-  // };
-
-  const checkUser = async (email, pw) => {
-    await userFetch(email, pw).then((user) => {
-      if (user.email === email) {
-        setCurrentUser(user)
-        localStorage.setItem('user', JSON.stringify(user))
-        setLoggedIn(true)
-        loginModalSwitch()
-        return true
-      } else return false
-    })
+  const checkUser = async (userEmail, pw) => {
+    const newestAddition = {
+      email: userEmail,
+      password: pw,
+    };
+    let decision = false;
+    await loginAuth(newestAddition).then((token) => {
+      if (token.length) {
+        setCurrentUser(token);
+        localStorage.setItem('user', JSON.stringify(token));
+        setLoggedIn(true);
+        loginModalSwitch();
+        decision = true;
+      }
+    });
+    return decision;
   };
 
   return (
@@ -294,6 +350,7 @@ export const RentProvider = ({ children }) => {
         loginModal,
         setLoginModal,
         currentUser,
+        userAccount,
         addUser,
         checkUser,
         loggedIn,
@@ -325,6 +382,7 @@ export const useRent = () => {
     loginModal: context.loginModal,
     setLoginModal: context.setLoginModal,
     currentUser: context.currentUser,
+    userAccount: context.userAccount,
     addUser: context.addUser,
     checkUser: context.checkUser,
     loggedIn: context.loggedIn,

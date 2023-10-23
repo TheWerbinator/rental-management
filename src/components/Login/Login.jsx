@@ -17,32 +17,34 @@ const Login = () => {
 
   const submitLogin = async (e) => {
     e.preventDefault();
-    const response = await checkUser(emailInput, passwordInput)
-    if(response === true) {
-      setLoginModal(false)
-      toast.success('Logged In', {
-        position: "top-center",
-        autoClose: 2000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      })
-    } else if(response === false){
-      setErrorModal(true)
-      toast.error('Incorrect Login', {
-        position: "top-center",
-        autoClose: 2000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      })
-    }
+    await checkUser(emailInput, passwordInput).then((response) => {
+      if (response === true) {
+        setLoginModal(false);
+        toast.success('Logged In', {
+          position: 'top-center',
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'dark',
+        });
+      } else if (response === false) {
+        setErrorModal(true);
+        toast.error('Incorrect Login', {
+          position: 'top-center',
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'dark',
+        });
+      }
+    });
+    
   }
 
   const submitSignup = async (e) => {

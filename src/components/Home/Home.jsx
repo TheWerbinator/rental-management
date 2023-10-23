@@ -6,11 +6,22 @@ import x from '../../assets/close.png'
 import bookmark from '../../assets/bookmark.png'
 
 const Home = () => {
-  const { currentUser, equipment, rentItem, saveItem, savedForLater, activeRentals, searchText, loggedIn, loginModalSwitch, setAuthModalType } = useRent();
+  const {
+    userAccount,
+    equipment,
+    rentItem,
+    saveItem,
+    savedForLater,
+    activeRentals,
+    searchText,
+    loggedIn,
+    loginModalSwitch,
+    setAuthModalType,
+  } = useRent();
   const remainingEquipment =
     equipment?.filter((item) => !item.isRented) || null;
-  const [productModal, setProductModal] = useState(false)
-  const [currentItem, setCurrentItem] = useState({})
+  const [productModal, setProductModal] = useState(false);
+  const [currentItem, setCurrentItem] = useState({});
 
   return (
     <>
@@ -26,10 +37,10 @@ const Home = () => {
           remainingEquipment.map((item) => {
             let bookmarkClass = '';
             if (
-              currentUser !== null &&
+              userAccount !== null &&
               savedForLater.filter(
                 (savedItem) =>
-                  savedItem.userId === currentUser.id &&
+                  savedItem.userEmail === userAccount.email &&
                   savedItem.equipmentId === item.id
               ).length
             ) {
@@ -65,6 +76,7 @@ const Home = () => {
             }
           })}
       </div>
+      ;
       {productModal && (
         <div className='product-modal'>
           <img src={x} onClick={() => setProductModal(false)}></img>
@@ -117,11 +129,11 @@ const Home = () => {
               Rent
             </button>
 
-            {currentUser !== null &&
+            {userAccount.email &&
             savedForLater.filter((item) => {
               if (
-                item.userId === currentUser.id &&
-                item.equipmentId === currentItem.id
+                item.userEmail === userAccount.email &&
+                item.savedId === currentItem.id
               ) {
                 return item;
               }
