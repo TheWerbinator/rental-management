@@ -23,7 +23,7 @@ export const RentProvider = ({ children }) => {
   const [searchText, setSearchText] = useState('');
 
   const renderChecker = useRef(true);
-  // const userChecker = useRef(false);
+  // const userChecker = useRef(0);
 
   useEffect(() => {
     if (renderChecker.current) {
@@ -35,8 +35,7 @@ export const RentProvider = ({ children }) => {
       if (localUser !== null && localUser !== 'undefined') {
         localUserAuth(localUser).then((check) => {
           if (check === true) {
-            setCurrentUser(localUser);
-            // setCurrentUser(localUser.split(`"`)[1]);
+            setCurrentUser(localUser.split(`"`)[1]);
             setLoggedIn(true);
           }
         });
@@ -48,35 +47,44 @@ export const RentProvider = ({ children }) => {
 
   useEffect(() => {
     if (userAccount.email) {
-      getDb(`http://localhost:3000/saved/${userAccount.email}`).then(
+      const options = {
+        method: 'GET',
+        headers: {
+          'Content-type': 'application/json; charset=UTF-8',
+          Authorization: `Bearer ${currentUser}`,
+        },
+        // mode: "cors",
+        // credentials: "include",
+      };
+      const userEmail = userAccount.email;
+      getDb(`http://localhost:3000/saved/${userEmail}`, options).then(
         (result) => {
           setSavedForLater(result);
         }
       );
-      // getDb(`http://localhost:3000/rentals/${userAccount.email}`).then(
-      //   (result) => {
-      //     setActiveRentals(result);
-      //   }
-      // );
+      getDb(`http://localhost:3000/rentals/${userEmail}`, options).then(
+        (result) => {
+          setActiveRentals(result);
+        }
+      );
     }
 
-    // userChecker.current = true;
+    // userChecker.current++;
   }, [currentUser]);
 
-  const getDb = async (url) => {
-    const options = {
-      method: 'GET',
-      // mode: "cors",
-      // credentials: "omit",
-      // headers: {
-      //   "Content-Type": "application/json"
-      // }
-    };
-    try {
-      const response = await fetch(url, options).then((res) => res.json());
-      return response;
-    } catch (error) {
-      console.error(error);
+  const getDb = async (url, options) => {
+    if (options) {
+      try {
+        return await fetch(url, options).then((res) => res.json());
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      try {
+        return await fetch(url).then((res) => res.json());
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 
@@ -137,8 +145,8 @@ export const RentProvider = ({ children }) => {
 
   const addActiveRental = async (item, userEmail) => {
     const newestAddition = {
-      userId: userEmail,
-      equipmentId: item.id,
+      userEmail: userEmail,
+      rentalId: item.id,
     };
     try {
       await fetch(`http://localhost:3000/rentals`, {
@@ -150,24 +158,42 @@ export const RentProvider = ({ children }) => {
         },
         // mode: "cors",
         // credentials: "include",
-      });
-      await fetch(`http://localhost:3000/equipment/${item.id}`, {
-        method: 'PATCH',
-        body: JSON.stringify({
-          isRented: true,
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        // mode: "cors",
-        // credentials: "include",
-      });
-      await getDb('http://localhost:3000/rentals').then((result) => {
-        setActiveRentals(result);
-      });
-      await getDb('http://localhost:3000/equipment').then((result) => {
-        setEquipment(result);
-      });
+      })
+        .then(async () => {
+          await fetch(`http://localhost:3000/equipment/${item.id}`, {
+            method: 'PATCH',
+            body: JSON.stringify({
+              isRented: true,
+            }),
+            headers: {
+              'Content-Type': 'application/json; charset=UTF-8',
+              Authorization: `Bearer ${currentUser}`,
+            },
+            // mode: "cors",
+            // credentials: "include",
+          });
+        })
+        .then(async () => {
+          const options = {
+            method: 'GET',
+            headers: {
+              'Content-type': 'application/json; charset=UTF-8',
+              Authorization: `Bearer ${currentUser}`,
+            },
+            // mode: "cors",
+            // credentials: "include",
+          };
+          const userEmail = userAccount.email;
+          await getDb(
+            `http://localhost:3000/rentals/${userEmail}`,
+            options
+          ).then((result) => {
+            setActiveRentals(result);
+          });
+          await getDb('http://localhost:3000/equipment').then((result) => {
+            setEquipment(result);
+          });
+        });
     } catch (error) {
       console.error(error);
     }
@@ -191,17 +217,21 @@ export const RentProvider = ({ children }) => {
         body: JSON.stringify(newestAddition),
         headers: {
           'Content-type': 'application/json; charset=UTF-8',
-          // Authorization: `Bearer ${currentUser}`,
-          Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFzZGZAdGVzdC5jb20iLCJuYW1lIjoiQXNkZiIsInBhc3N3b3JkIjoiJDJiJDEyJE1uL0R3ZzNkb0R3bTJEaFNWdkZoeGVXMm9BYXZUaU1sRVBISWtvamtQTGdxQ2RYaFdzbHBxIiwiaWF0IjoxNjk4MDc4NzIwfQ.PRVxoy-IYeW6k3siFVM51nyRdGt4WdZGFBnKzvQ1PQA`,
+          Authorization: `Bearer ${currentUser}`,
         },
         // mode: "cors",
         // credentials: "include",
-      });
-      await getDb(`http://localhost:3000/saved/${currentUserEmail}`).then(
-        (result) => {
+      }).then(async () => {
+        await getDb(`http://localhost:3000/saved/${currentUserEmail}`, {
+          method: 'GET',
+          headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+            Authorization: `Bearer ${currentUser}`,
+          },
+        }).then((result) => {
           setSavedForLater(result);
-        }
-      );
+        });
+      });
     } catch (error) {
       console.error(error);
     }
@@ -217,14 +247,17 @@ export const RentProvider = ({ children }) => {
 
   const signOut = () => {
     setCurrentUser({});
+    setActiveRentals([]);
+    setSavedForLater([]);
     setRoute('home');
     setLoggedIn(false);
     localStorage.removeItem('user');
   };
 
   const removeRental = async (rentalId, item) => {
+    const userEmail = currentUser.email;
     try {
-      await fetch(`http://localhost:3000/rentals/${rentalId}`, {
+      await fetch(`http://localhost:3000/rentals/${item.id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -245,7 +278,15 @@ export const RentProvider = ({ children }) => {
         // mode: "cors",
         // credentials: "include",
       });
-      await getDb('http://localhost:3000/activeRentals').then((result) => {
+      await getDb(`http://localhost:3000/rentals/${userEmail}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${currentUser}`,
+        },
+        // mode: "cors",
+        // credentials: "include",
+      }).then((result) => {
         setActiveRentals(result);
       });
       await getDb('http://localhost:3000/equipment').then((result) => {
@@ -257,6 +298,7 @@ export const RentProvider = ({ children }) => {
   };
 
   const removeSaved = async (savedId) => {
+    const userEmail = userAccount.email;
     try {
       await fetch(`http://localhost:3000/saved/${savedId}`, {
         method: 'DELETE',
@@ -267,11 +309,17 @@ export const RentProvider = ({ children }) => {
         // mode: "cors",
         // credentials: "include",
       });
-      await getDb(`http://localhost:3000/saved/${userAccount.email}`).then(
-        (result) => {
-          setSavedForLater(result);
-        }
-      );
+      await getDb(`http://localhost:3000/saved/${userEmail}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${currentUser}`,
+        },
+        // mode: "cors",
+        // credentials: "include",
+      }).then((result) => {
+        setSavedForLater(result);
+      });
     } catch (error) {
       console.error(error);
     }
@@ -284,23 +332,28 @@ export const RentProvider = ({ children }) => {
         body: JSON.stringify(user),
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${currentUser}`,
         },
         // mode: "cors",
         // credentials: "include",
-      });
-      let userInQuestion = [];
-      await usersFetch().then((response) => {
-        userInQuestion = response.filter((fetchedUser) => {
-          if (
-            user.email === fetchedUser.email &&
-            user.password === fetchedUser.password
-          ) {
-            return user;
+      }).then(async () => {
+        // await usersFetch().then((response) => {
+        //   let userInQuestion = [];
+        //   userInQuestion = response.filter((fetchedUser) => {
+        //     if (
+        //       user.email === fetchedUser.email &&
+        //       user.password === fetchedUser.password
+        //     ) {
+        //       return user;
+        //     }
+        //   })[0];
+        //   return userInQuestion;
+        // });
+        await checkUser(user.email, user.password).then((res) => {
+          if (res === false) {
+            throw new Error('Something went wrong');
           }
-        })[0];
+        });
       });
-      return userInQuestion;
     } catch (error) {
       console.error(error);
     }
@@ -319,20 +372,16 @@ export const RentProvider = ({ children }) => {
       //   securityCode: '',
       // },
     };
-    await registerFetch(newestAddition).then((user) => {
-      localStorage.setItem('user', JSON.stringify(user));
-      setCurrentUser(user);
-      setLoggedIn(true);
-    });
+    await registerFetch(newestAddition);
   };
 
   const checkUser = async (userEmail, pw) => {
-    const newestAddition = {
+    const returningUser = {
       email: userEmail,
       password: pw,
     };
     let decision = false;
-    await loginAuth(newestAddition).then((token) => {
+    await loginAuth(returningUser).then((token) => {
       if (token.length) {
         setCurrentUser(token);
         localStorage.setItem('user', JSON.stringify(token));

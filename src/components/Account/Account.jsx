@@ -53,30 +53,34 @@ const Account = () => {
           ) : accountRoute === 'rentals' ? (
             <div className='active-rentals'>
               <h2>Active Rentals</h2>
-              {activeRentals.map((rental) => {
-                console.log(rental);
-                return (
-                  <div id={rental.id}>
-                    {rental.userEmail === userAccount.email &&
-                      equipment.map((item) => {
-                        return (
-                          rental.id === item.id && (
-                            <div className='account-rental-item' id={item.id}>
-                              <h3>{item.name}</h3>
-                              <img src={item.image} alt={item.name} />
-                              <p>{item.description}</p>
-                              <button
-                                onClick={() => removeRental(rental.id, item)}
-                              >
-                                End Rental
-                              </button>
-                            </div>
-                          )
-                        );
-                      })}
-                  </div>
-                );
-              })}
+              {activeRentals.length ? (
+                <div className='saved-items-wrapper'>
+                  {activeRentals.map((rental) => {
+                    return (
+                      <div id={rental.id}>
+                        {equipment.map((item) => {
+                          return (
+                            rental.rentalId === item.id && (
+                              <div className='account-rental-item' id={item.id}>
+                                <h3>{item.name}</h3>
+                                <img src={item.image} alt={item.name} />
+                                <p>{item.description}</p>
+                                <button
+                                  onClick={() => removeRental(rental.id, item)}
+                                >
+                                  End Rental
+                                </button>
+                              </div>
+                            )
+                          );
+                        })}
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <p>No rented equipment</p>
+              )}
             </div>
           ) : (
             <div className='saved-for-later'>

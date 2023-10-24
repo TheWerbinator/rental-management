@@ -33,48 +33,46 @@ const Home = () => {
       </div>
       <h2>Available Equipment</h2>
       <div className='equipment-gallery'>
-        {equipment?.length &&
-          remainingEquipment.map((item) => {
-            let bookmarkClass = '';
-            if (
-              userAccount !== null &&
-              savedForLater.filter(
-                (savedItem) =>
-                  savedItem.userEmail === userAccount.email &&
-                  savedItem.equipmentId === item.id
-              ).length
-            ) {
-              bookmarkClass = 'bookmark';
-            } else bookmarkClass = 'bookmark hidden';
-            if (item.name.toLowerCase().includes(searchText)) {
-              return (
-                <div className='equipment-gallery-item' key={item.id}>
-                  <img
-                    className={bookmarkClass}
-                    src={bookmark}
-                    alt='bookmark'
-                  />
-                  <h3>{item.name}</h3>
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    onClick={() => {
-                      setProductModal(true);
-                      setCurrentItem(item);
-                    }}
-                  />
-                  <button
-                    onClick={() => {
-                      setProductModal(true);
-                      setCurrentItem(item);
-                    }}
-                  >
-                    More Info
-                  </button>
-                </div>
-              );
-            }
-          })}
+        {remainingEquipment.map((item) => {
+          let bookmarkClass = '';
+          if (
+            userAccount.email &&
+            savedForLater.filter((saved) => {
+              if (
+                saved.userEmail === userAccount.email &&
+                saved.savedId === item.id
+              ) {
+                return saved;
+              }
+            }).length
+          ) {
+            bookmarkClass = 'bookmark';
+          } else bookmarkClass = 'bookmark hidden';
+          if (item.name.toLowerCase().includes(searchText)) {
+            return (
+              <div className='equipment-gallery-item' key={item.id}>
+                <img className={bookmarkClass} src={bookmark} alt='bookmark' />
+                <h3>{item.name}</h3>
+                <img
+                  src={item.image}
+                  alt={item.name}
+                  onClick={() => {
+                    setProductModal(true);
+                    setCurrentItem(item);
+                  }}
+                />
+                <button
+                  onClick={() => {
+                    setProductModal(true);
+                    setCurrentItem(item);
+                  }}
+                >
+                  More Info
+                </button>
+              </div>
+            );
+          }
+        })}
       </div>
       ;
       {productModal && (
@@ -92,33 +90,31 @@ const Home = () => {
               onClick={async () => {
                 if (loggedIn) {
                   setProductModal(false);
-                  const currentRentals = activeRentals.length;
-                  console.log('before', currentRentals);
-                  await rentItem(currentItem);
-                  console.log('after', activeRentals.length);
-                  if (currentRentals < activeRentals.length) {
-                    toast.success('Equipment Rented', {
-                      position: 'top-center',
-                      autoClose: 2000,
-                      hideProgressBar: true,
-                      closeOnClick: true,
-                      pauseOnHover: true,
-                      draggable: true,
-                      progress: undefined,
-                      theme: 'dark',
-                    });
-                  } else {
-                    toast.error('Error Submitting Rental', {
-                      position: 'top-center',
-                      autoClose: 2000,
-                      hideProgressBar: true,
-                      closeOnClick: true,
-                      pauseOnHover: true,
-                      draggable: true,
-                      progress: undefined,
-                      theme: 'dark',
-                    });
-                  }
+                  await rentItem(currentItem)
+                    .then(() => {
+                      toast.success('Equipment Rented', {
+                        position: 'top-center',
+                        autoClose: 2000,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: 'dark',
+                      });
+                    })
+                    .catch(() =>
+                      toast.error('Error Submitting Rental', {
+                        position: 'top-center',
+                        autoClose: 2000,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: 'dark',
+                      })
+                    );
                 } else {
                   setAuthModalType('signin');
                   setProductModal(false);
