@@ -12,7 +12,6 @@ const Home = () => {
     rentItem,
     saveItem,
     savedForLater,
-    activeRentals,
     searchText,
     loggedIn,
     loginModalSwitch,

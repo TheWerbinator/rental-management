@@ -246,7 +246,8 @@ export const RentProvider = ({ children }) => {
   };
 
   const signOut = () => {
-    setCurrentUser({});
+    setCurrentUser('');
+    setUserAccount({});
     setActiveRentals([]);
     setSavedForLater([]);
     setRoute('home');
