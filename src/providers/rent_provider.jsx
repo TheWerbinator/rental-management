@@ -23,7 +23,6 @@ export const RentProvider = ({ children }) => {
   const [searchText, setSearchText] = useState('');
 
   const renderChecker = useRef(true);
-  // const userChecker = useRef(0);
 
   useEffect(() => {
     if (renderChecker.current) {
@@ -53,8 +52,6 @@ export const RentProvider = ({ children }) => {
           'Content-type': 'application/json; charset=UTF-8',
           Authorization: `Bearer ${currentUser}`,
         },
-        // mode: "cors",
-        // credentials: "include",
       };
       const userEmail = userAccount.email;
       getDb(`http://localhost:3000/saved/${userEmail}`, options).then(
@@ -68,8 +65,6 @@ export const RentProvider = ({ children }) => {
         }
       );
     }
-
-    // userChecker.current++;
   }, [currentUser]);
 
   const getDb = async (url, options) => {
@@ -97,8 +92,6 @@ export const RentProvider = ({ children }) => {
       headers: {
         'Content-type': 'application/json; charset=UTF-8',
       },
-      // mode: "cors",
-      // credentials: "include",
     })
       .then((res) => res.json())
       .then((response) => {
@@ -124,8 +117,6 @@ export const RentProvider = ({ children }) => {
         'Content-type': 'application/json; charset=UTF-8',
         Authorization: `Bearer ${localUser.split(`"`)[1]}`,
       },
-      // mode: "cors",
-      // credentials: "include",
     })
       .then((res) => res.json())
       .then((res) => {
@@ -156,8 +147,6 @@ export const RentProvider = ({ children }) => {
           'Content-type': 'application/json; charset=UTF-8',
           Authorization: `Bearer ${currentUser}`,
         },
-        // mode: "cors",
-        // credentials: "include",
       })
         .then(async () => {
           await fetch(`http://localhost:3000/equipment/${item.id}`, {
@@ -169,8 +158,6 @@ export const RentProvider = ({ children }) => {
               'Content-Type': 'application/json; charset=UTF-8',
               Authorization: `Bearer ${currentUser}`,
             },
-            // mode: "cors",
-            // credentials: "include",
           });
         })
         .then(async () => {
@@ -180,8 +167,6 @@ export const RentProvider = ({ children }) => {
               'Content-type': 'application/json; charset=UTF-8',
               Authorization: `Bearer ${currentUser}`,
             },
-            // mode: "cors",
-            // credentials: "include",
           };
           const userEmail = userAccount.email;
           await getDb(
@@ -219,8 +204,6 @@ export const RentProvider = ({ children }) => {
           'Content-type': 'application/json; charset=UTF-8',
           Authorization: `Bearer ${currentUser}`,
         },
-        // mode: "cors",
-        // credentials: "include",
       }).then(async () => {
         await getDb(`http://localhost:3000/saved/${currentUserEmail}`, {
           method: 'GET',
@@ -264,8 +247,6 @@ export const RentProvider = ({ children }) => {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${currentUser}`,
         },
-        // mode: "cors",
-        // credentials: "include",
       });
       await fetch(`http://localhost:3000/equipment/${item.id}`, {
         method: 'PATCH',
@@ -276,8 +257,6 @@ export const RentProvider = ({ children }) => {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${currentUser}`,
         },
-        // mode: "cors",
-        // credentials: "include",
       });
       await getDb(`http://localhost:3000/rentals/${userEmail}`, {
         method: 'GET',
@@ -285,8 +264,6 @@ export const RentProvider = ({ children }) => {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${currentUser}`,
         },
-        // mode: "cors",
-        // credentials: "include",
       }).then((result) => {
         setActiveRentals(result);
       });
@@ -307,8 +284,6 @@ export const RentProvider = ({ children }) => {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${currentUser}`,
         },
-        // mode: "cors",
-        // credentials: "include",
       });
       await getDb(`http://localhost:3000/saved/${userEmail}`, {
         method: 'GET',
@@ -316,8 +291,6 @@ export const RentProvider = ({ children }) => {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${currentUser}`,
         },
-        // mode: "cors",
-        // credentials: "include",
       }).then((result) => {
         setSavedForLater(result);
       });
@@ -334,21 +307,7 @@ export const RentProvider = ({ children }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        // mode: "cors",
-        // credentials: "include",
       }).then(async () => {
-        // await usersFetch().then((response) => {
-        //   let userInQuestion = [];
-        //   userInQuestion = response.filter((fetchedUser) => {
-        //     if (
-        //       user.email === fetchedUser.email &&
-        //       user.password === fetchedUser.password
-        //     ) {
-        //       return user;
-        //     }
-        //   })[0];
-        //   return userInQuestion;
-        // });
         await checkUser(user.email, user.password).then((res) => {
           if (res === false) {
             throw new Error('Something went wrong');
@@ -365,13 +324,6 @@ export const RentProvider = ({ children }) => {
       name: name,
       email: email,
       password: password,
-      // phone: phone,
-      // payment: {
-      //   nameOnCard: '',
-      //   cardNumber: '',
-      //   exp: '',
-      //   securityCode: '',
-      // },
     };
     await registerFetch(newestAddition);
   };
