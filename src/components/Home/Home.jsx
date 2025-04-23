@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { useRent } from '../../providers/rent_provider';
-import { ToastContainer, toast } from 'react-toastify';
-import './Home.css';
-import x from '../../assets/close.png'
-import bookmark from '../../assets/bookmark.png'
+import React, { useState } from "react";
+import { useRent } from "../../providers/rent_provider";
+import { toast } from "react-toastify";
+import "./Home.css";
+import x from "../../assets/close.png";
+import bookmark from "../../assets/bookmark.png";
 
 const Home = () => {
   const {
@@ -33,10 +33,10 @@ const Home = () => {
       <h2>Available Equipment</h2>
       <div className='equipment-gallery'>
         {remainingEquipment.map((item) => {
-          let bookmarkClass = '';
+          let bookmarkClass = "";
           if (
-            userAccount.email &&
-            savedForLater.filter((saved) => {
+            userAccount?.email &&
+            savedForLater?.filter((saved) => {
               if (
                 saved.userEmail === userAccount.email &&
                 saved.savedId === item.id
@@ -45,8 +45,8 @@ const Home = () => {
               }
             }).length
           ) {
-            bookmarkClass = 'bookmark';
-          } else bookmarkClass = 'bookmark hidden';
+            bookmarkClass = "bookmark";
+          } else bookmarkClass = "bookmark hidden";
           if (item.name.toLowerCase().includes(searchText)) {
             return (
               <div className='equipment-gallery-item' key={item.id}>
@@ -91,31 +91,31 @@ const Home = () => {
                   setProductModal(false);
                   await rentItem(currentItem)
                     .then(() => {
-                      toast.success('Equipment Rented', {
-                        position: 'top-center',
+                      toast.success("Equipment Rented", {
+                        position: "top-center",
                         autoClose: 2000,
                         hideProgressBar: true,
                         closeOnClick: true,
                         pauseOnHover: true,
                         draggable: true,
                         progress: undefined,
-                        theme: 'dark',
+                        theme: "dark",
                       });
                     })
                     .catch(() =>
-                      toast.error('Error Submitting Rental', {
-                        position: 'top-center',
+                      toast.error("Error Submitting Rental", {
+                        position: "top-center",
                         autoClose: 2000,
                         hideProgressBar: true,
                         closeOnClick: true,
                         pauseOnHover: true,
                         draggable: true,
                         progress: undefined,
-                        theme: 'dark',
+                        theme: "dark",
                       })
                     );
                 } else {
-                  setAuthModalType('signin');
+                  setAuthModalType("signin");
                   setProductModal(false);
                   loginModalSwitch();
                 }
@@ -124,8 +124,8 @@ const Home = () => {
               Rent
             </button>
 
-            {userAccount.email &&
-            savedForLater.filter((item) => {
+            {userAccount?.email &&
+            savedForLater?.filter((item) => {
               if (
                 item.userEmail === userAccount.email &&
                 item.savedId === currentItem.id
@@ -140,7 +140,7 @@ const Home = () => {
                   if (loggedIn) {
                     saveItem(currentItem);
                   } else {
-                    setAuthModalType('signin');
+                    setAuthModalType("signin");
                     setProductModal(false);
                     loginModalSwitch();
                   }
@@ -154,6 +154,6 @@ const Home = () => {
       )}
     </>
   );
-}
+};
 
 export default Home;
